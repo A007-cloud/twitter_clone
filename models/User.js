@@ -25,6 +25,8 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
   tokens: [{ type: Object }],
+  followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 });
 
 module.exports = mongoose.model('User', userSchema);

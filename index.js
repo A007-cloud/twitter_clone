@@ -6,6 +6,7 @@ const port = process.env.PORT;
 const notFoundMiddleware = require('./middleware/not-found');
 //Import Route
 const authRoute = require('./routes/auth');
+const tweetRoutes = require('./routes/tweet');
 const subscriberRoute = require('./routes/subscriberRoute');
 
 //middleware
@@ -16,7 +17,7 @@ app.use('/api/v1/user', authRoute);
 app.use('/api/v1/users', subscriberRoute);
 
 // Mount routes
-// app.use('/api', tweetRoutes);
+app.use('/api/v1/tweet', tweetRoutes);
 
 app.use(notFoundMiddleware);
 

@@ -72,19 +72,23 @@ const logInUser = async (req, res) => {
     const token = await jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
 
     // Validation to insert token in database
-    let oldTokens = user.tokens || [];
+    // let oldTokens = user.tokens || [];
 
-    if (oldTokens.length) {
-      oldTokens = oldTokens.filter((t) => {
-        const timeDiff = (Date.now - parseInt(t.signedAt)) / 1000;
-        if (timeDiff < 86400) {
-          return t;
-        }
-      });
-    }
+    // if (oldTokens.length) {
+    //   oldTokens = oldTokens.filter((t) => {
+    //     const timeDiff = (Date.now - parseInt(t.signedAt)) / 1000;
+    //     if (timeDiff < 86400) {
+    //       return t;
+    //     }
+    //   });
+    // }
+
+    // await User.findOneAndUpdate(user._id, {
+    //   tokens: [...oldTokens, { token, signedAt: Date.now().toString() }],
+    // });
 
     await User.findOneAndUpdate(user._id, {
-      tokens: [...oldTokens, { token, signedAt: Date.now().toString() }],
+      $push: { tokens: token, signedAt: Date.now().toString() },
     });
 
     res.header('authorization', token).send({
@@ -106,13 +110,16 @@ const logInUser = async (req, res) => {
 const logOutUser = async (req, res) => {
   if (req.headers && req.headers.authorization) {
     const token = req.headers.authorization.split(' ');
+    const tokenID = req.headers.authorization;
     if (!token) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
         message: 'Invalid authorization',
       });
     }
-    await User.findByIdAndUpdate(req.user._id, { $unset: { tokens: 1 } });
+    await User.findByIdAndUpdate(req.user._id, {
+      $pull: { tokens: tokenID },
+    });
     res.status(StatusCodes.OK).json({
       success: true,
       message: 'user logout',
@@ -120,4 +127,62 @@ const logOutUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, logInUser, logOutUser };
+// Controller to follow a user
+const followUser = async (req, res) => {
+  try {
+    const { userId } = req.params; // The ID of the user to follow
+    const currentUser = req.headers.user_id; // Assuming you have implemented authentication middleware to attach the user to the request object
+
+    // Check if the user to follow exists
+    const userToFollow = await User.findById(userId);
+    if (!userToFollow) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Add the user to the current user's following list
+    await User.findByIdAndUpdate(currentUser, {
+      $push: { following: userId },
+    });
+
+    // Add the current user to the userToFollow's followers list
+    await User.findByIdAndUpdate(userId, {
+      $push: { followers: currentUser },
+    });
+
+    res.json({ message: 'User followed successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// Controller to unfollow a user
+const unfollowUser = async (req, res) => {
+  try {
+    const { userId } = req.params; // The ID of the user to unfollow
+    const currentUser = req.headers.user_id; // Assuming you have implemented authentication middleware to attach the user to the request object
+
+    // Check if the user to unfollow exists
+    const userToUnfollow = await User.findById(userId);
+    if (!userToUnfollow) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Remove the user from the current user's following list
+    await User.findByIdAndUpdate(currentUser, { $pull: { following: userId } });
+
+    // Remove the current user from the userToUnfollow's followers list
+    await User.findByIdAndUpdate(userId, { $pull: { followers: currentUser } });
+
+    res.json({ message: 'User unfollowed successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+module.exports = {
+  registerUser,
+  logInUser,
+  logOutUser,
+  followUser,
+  unfollowUser,
+};
