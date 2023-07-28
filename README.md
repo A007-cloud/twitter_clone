@@ -6,13 +6,13 @@ Seeking a talented Backend Developer with expertise in Node.js, Express.js, Java
 # Features
 1. Auth (Sign in/Sign up/Log out)
 2. Show list of user
-3.Create New tweet
-4.Update tweet
-5.Delete tweet
-6.Read tweet
-7.Read tweet by id
-8.Follow / Unfollow
-9.Delete tweet
+3. Create New tweet
+4. Update tweet
+5. Delete tweet
+6. Read tweet
+7. Read tweet by ID
+8. Follow / Unfollow
+9. Delete tweet
 
 # Start the app locally 🔌
 First please clone this repository
