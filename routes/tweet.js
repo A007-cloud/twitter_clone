@@ -13,7 +13,7 @@ const {
 
 // Create a new tweet
 // router.post('/tweets', tweetController.createTweet);
-router.route('/create').post(verifyRoute, createTweet);
+router.route('/create').post(createTweet);
 
 // Get all tweets
 // router.get('/tweets', tweetController.getTweets);
@@ -24,9 +24,9 @@ router.route('/find/:id').get(getSingleTweet);
 // router.get('/:id', UserController.findOne);
 
 // Update single tweet with id
-router.route('/update/:id').patch(verifyRoute, updateTweet);
+router.route('/update/:id').patch(updateTweet);
 
 // Delete single tweet with id
-router.route('/delete/:id').delete(verifyRoute, deleteTweet);
+router.route('/delete/:id').delete(deleteTweet);
 
 module.exports = router;
