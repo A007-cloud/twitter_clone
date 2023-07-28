@@ -4,8 +4,8 @@
 Seeking a talented Backend Developer with expertise in Node.js, Express.js, JavaScript, and MongoDB to power our exciting Twitter clone application. Build robust APIs, ensure secure data handling, and optimize performance for a seamless user experience. Collaborate with cross-functional teams and deliver high-quality solutions to meet project goals. Join us in creating an innovative and scalable backend for our dynamic social platform. Let's shape the future of communication together! #NodeJS #ExpressJS #JavaScript #MongoDB #BackendDeveloper #TwitterClone
 
 # Features
-1.Auth (Sign in/Sign up/Log out)
-2.Show list of user
+1. Auth (Sign in/Sign up/Log out)
+2. Show list of user
 3.Create New tweet
 4.Update tweet
 5.Delete tweet
